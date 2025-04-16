@@ -14,7 +14,6 @@ public class EnemyTracecontroller : MonoBehaviour
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player").transform;
-
     }
 
     // Update is called once per frame
@@ -23,8 +22,8 @@ public class EnemyTracecontroller : MonoBehaviour
         
         Vector2 direction = player.position - transform.position;
 
-        if (direction.magnitude > traceDistance)
-        return;
+        if (direction.magnitude > traceDistance) 
+            return;
 
         Vector2 directionNormalized = direction.normalized;
 
@@ -40,6 +39,22 @@ public class EnemyTracecontroller : MonoBehaviour
             }
             else{
                 transform.Translate(direction * moveSpeed * Time.deltaTime);
+
+                Vector3 scale = transform.localScale;
+                float xScale = Mathf.Abs(transform.localScale.x);
+
+                
+                
+                if (direction.x < 0)
+                {
+                    scale.x = xScale;
+                    transform.localScale = scale;
+                }
+                else
+                {
+                    scale.x = -xScale;
+                    transform.localScale = scale;
+                }
             }
         }
     }

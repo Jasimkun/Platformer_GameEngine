@@ -19,9 +19,27 @@ public class EnemyController : MonoBehaviour
     private void Update()
     {
         if (isMovingRight)
-        rb.velocity = new Vector2(moveSpeed, rb.velocity.y);
+        {
+            rb.velocity = new Vector2(moveSpeed, rb.velocity.y);
+        }
         else
-        rb.velocity = new Vector2(-moveSpeed, rb.velocity.y);
+        {
+            rb.velocity = new Vector2(-moveSpeed, rb.velocity.y);
+        }
+
+        Vector3 scale = transform.localScale;
+        float xScale = Mathf.Abs(transform.localScale.x);
+        
+        if (isMovingRight)
+        {
+            scale.x = -xScale;
+            transform.localScale = scale;
+        }
+        else
+        {
+            scale.x = xScale;
+            transform.localScale = scale;
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

@@ -8,6 +8,8 @@ TagManager:
   - Enemy
   - Boundary
   - Obstacle
+  - SpeedUp
+  - Phoenix
   layers:
   - Default
   - TransparentFX
