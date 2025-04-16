@@ -8,7 +8,7 @@ public class MYSceneManager : MonoBehaviour
     // Start is called before the first frame update
     public void OnStartButtonClicked()
     {
-        SceneManager.LoadScene("SampleScene_Door1");
+        SceneManager.LoadScene("Level_1");
     }
 
     // Update is called once per frame

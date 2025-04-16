@@ -10,6 +10,7 @@ TagManager:
   - Obstacle
   - SpeedUp
   - Phoenix
+  - Realdeadzone
   layers:
   - Default
   - TransparentFX

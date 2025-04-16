@@ -74,6 +74,10 @@ public class PlayerController : MonoBehaviour
             StartCoroutine(SpeedUp());
             Destroy(collision.gameObject);
         }
+        if (collision.CompareTag("Realdeadzone"))
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
     }
 
     private IEnumerator Phoenix()
