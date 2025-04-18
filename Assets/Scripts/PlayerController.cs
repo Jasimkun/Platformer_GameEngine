@@ -11,10 +11,12 @@ public class PlayerController : MonoBehaviour
     public float jumpForce = 5f;
     public Transform groundCheck;
     public LayerMask groundlayer;
+    public GameObject attackCollider;
     
     private Rigidbody2D rb;
     private Animator pAni;
-    private bool isGrounded, isPhoenix, speedUp;
+    private bool isGrounded, isPhoenix, speedUp, isAttackable;
+    
 
     private void Awake()
     {
@@ -49,6 +51,12 @@ public class PlayerController : MonoBehaviour
             rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
             pAni.SetTrigger("JumpAction");
         }
+
+        if (isAttackable && (Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.RightShift)))
+        {
+            attackCollider.SetActive(true);
+            pAni.SetTrigger("Attack");
+        }
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -73,6 +81,10 @@ public class PlayerController : MonoBehaviour
         {
             StartCoroutine(SpeedUp());
             Destroy(collision.gameObject);
+        }
+        if (collision.CompareTag("Deadzone") && !isPhoenix)
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
         if (collision.CompareTag("Realdeadzone"))
         {
