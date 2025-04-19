@@ -11,6 +11,7 @@ TagManager:
   - SpeedUp
   - Phoenix
   - Realdeadzone
+  - JumpUp
   layers:
   - Default
   - TransparentFX

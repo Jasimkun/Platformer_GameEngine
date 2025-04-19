@@ -15,7 +15,7 @@ public class PlayerController : MonoBehaviour
     
     private Rigidbody2D rb;
     private Animator pAni;
-    private bool isGrounded, isPhoenix, speedUp, isAttackable;
+    private bool isGrounded, isPhoenix, speedUp, jumpUp, isAttackable;
     
 
     private void Awake()
@@ -82,7 +82,12 @@ public class PlayerController : MonoBehaviour
             StartCoroutine(SpeedUp());
             Destroy(collision.gameObject);
         }
-        if (collision.CompareTag("Deadzone") && !isPhoenix)
+        if (collision.CompareTag("JumpUp"))
+        {
+            StartCoroutine(JumpUp());
+            Destroy(collision.gameObject);
+        }
+        if (collision.CompareTag("DeadZone") && !isPhoenix)
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
@@ -107,5 +112,13 @@ public class PlayerController : MonoBehaviour
         yield return new WaitForSeconds(3f);
         moveSpeed /= 2;
         speedUp = false;
+    }
+    private IEnumerator JumpUp()
+    {
+        jumpUp = true;
+        jumpForce *= 2;
+        yield return new WaitForSeconds(3f);
+        jumpForce /= 2;
+        jumpUp = false;
     }
 }
