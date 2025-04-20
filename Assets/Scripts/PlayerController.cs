@@ -8,20 +8,24 @@ public class PlayerController : MonoBehaviour
 {
     [SerializeField] private float playerSize = 1;
     public float moveSpeed = 5f;
+    public GameObject bossHealthBar;
     public float jumpForce = 5f;
     public Transform groundCheck;
     public LayerMask groundlayer;
     public GameObject attackCollider;
-    
+
     private Rigidbody2D rb;
     private Animator pAni;
     private bool isGrounded, isPhoenix, speedUp, jumpUp, isAttackable;
-    
+
+    public bool isAttack = false;
+    private float attackDelay = 0.5f;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
-        pAni = GetComponent <Animator>();
+        pAni = GetComponent<Animator>();
+        attackCollider.SetActive(false);
     }
 
     private void Update()
@@ -49,52 +53,59 @@ public class PlayerController : MonoBehaviour
         if (isGrounded && Input.GetKeyDown(KeyCode.Space))
         {
             rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+            isGrounded = false;
             pAni.SetTrigger("JumpAction");
         }
-
-        if (isAttackable && (Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.RightShift)))
+        if (Input.GetMouseButtonDown(0))
         {
-            attackCollider.SetActive(true);
+            isAttack = true;
             pAni.SetTrigger("Attack");
+            StartCoroutine(Attack());
+            Invoke("ResetIsAttack", attackDelay);
         }
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Respawn") && !isPhoenix)
+        switch (collision.gameObject.tag)
         {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            case "Respawn":
+                if (!isPhoenix)
+                    SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+                break;
+            case "Finish":
+                collision.GetComponent<LevelObject>().MoveToNextLevel();
+                break;
+            case "Enemy":
+                if (!isPhoenix)
+                    SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+                break;
+            case "Phoenix":
+                StartCoroutine(Phoenix());
+                Destroy(collision.gameObject);
+                break;
+            case "SpeedUp":
+                StartCoroutine(SpeedUp());
+                Destroy(collision.gameObject);
+                break;
+            case "JumpUp":
+                StartCoroutine(JumpUp());
+                Destroy(collision.gameObject);
+                break;
+            case "DeadZone":
+                if (!isPhoenix)
+                    SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+                break;
+            case "Realdeadzone":
+                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+                break;
         }
-        if (collision.CompareTag("Finish"))
-        {
-            collision.GetComponent<LevelObject>().MoveToNextLevel();
-        }
-        if (collision.CompareTag("Enemy") && !isPhoenix)
-        {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-        }
-        if (collision.CompareTag("Phoenix"))
-        {
-            StartCoroutine(Phoenix());
-            Destroy(collision.gameObject);
-        }
-        if (collision.CompareTag("SpeedUp"))
-        {
-            StartCoroutine(SpeedUp());
-            Destroy(collision.gameObject);
-        }
-        if (collision.CompareTag("JumpUp"))
-        {
-            StartCoroutine(JumpUp());
-            Destroy(collision.gameObject);
-        }
-        if (collision.CompareTag("DeadZone") && !isPhoenix)
-        {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-        }
-        if (collision.CompareTag("Realdeadzone"))
-        {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-        }
+    }
+    private IEnumerator Attack()
+    {
+        attackCollider.SetActive(true);
+        yield return new WaitForSeconds(0.7f);
+        attackCollider.SetActive(false);
+        yield break;
     }
 
     private IEnumerator Phoenix()
@@ -103,7 +114,7 @@ public class PlayerController : MonoBehaviour
         yield return new WaitForSeconds(3f);
         isPhoenix = false;
     }
-    
+
 
     private IEnumerator SpeedUp()
     {
@@ -120,5 +131,9 @@ public class PlayerController : MonoBehaviour
         yield return new WaitForSeconds(3f);
         jumpForce /= 2;
         jumpUp = false;
+    }
+    void ResetIsAttack()
+    {
+        isAttack = false;
     }
 }
