@@ -21,11 +21,15 @@ public class PlayerController : MonoBehaviour
     public bool isAttack = false;
     private float attackDelay = 0.5f;
 
+    float score;
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         pAni = GetComponent<Animator>();
         attackCollider.SetActive(false);
+
+        score = 1000f;
     }
 
     private void Update()
@@ -63,6 +67,7 @@ public class PlayerController : MonoBehaviour
             StartCoroutine(Attack());
             Invoke("ResetIsAttack", attackDelay);
         }
+        score -= Time.deltaTime;
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -73,6 +78,7 @@ public class PlayerController : MonoBehaviour
                     SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
                 break;
             case "Finish":
+                HighScore.TrySet(SceneManager.GetActiveScene().buildIndex, (int)score);
                 collision.GetComponent<LevelObject>().MoveToNextLevel();
                 break;
             case "Enemy":
