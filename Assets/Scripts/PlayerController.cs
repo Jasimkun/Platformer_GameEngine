@@ -78,7 +78,9 @@ public class PlayerController : MonoBehaviour
                     SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
                 break;
             case "Finish":
-                HighScore.TrySet(SceneManager.GetActiveScene().buildIndex, (int)score);
+                //HighScore.TrySet(SceneManager.GetActiveScene().buildIndex, (int)score);
+                StageResultSaver.SaveStage(SceneManager.GetActiveScene().buildIndex, (int)score);
+                
                 collision.GetComponent<LevelObject>().MoveToNextLevel();
                 break;
             case "Enemy":
